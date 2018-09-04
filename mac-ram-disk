@@ -6,11 +6,14 @@ set -e
 
 MB_SIZE=${MB_SIZE:-5}
 SIZE=$((2 * 1024 * $MB_SIZE))
-echo "creating ram disk of size $MB_SIZE mb ($SIZE)"
+echo "creating ram disk of size $MB_SIZE mb ($SIZE)" 1>&2
 
 DISK=$(hdiutil attach -nomount ram://$SIZE)
-diskutil eraseVolume HFS+ RAMDisk $DISK
+diskutil eraseVolume HFS+ RAMDisk $DISK 1>&2
+echo "created $DISK" 1>&2
 
-echo "created $DISK"
+MOUNT_POINT=$(mount | grep $DISK | sed 's|^.* on \(.*\) (.*$|\1|')
+[[ -z $MOUNT_POINT ]] && (echo "not mounted" 1>&2 && exit 1)
+echo "mounted on $MOUNT_POINT" 1>&2
 
-mount | grep $DISK | sed 's|^.* on \(.*\) (.*$|\1|' || (echo "not mounted" 1>&2 && exit 1)
+echo $MOUNT_POINT
