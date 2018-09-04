@@ -12,3 +12,5 @@ DISK=$(hdiutil attach -nomount ram://$SIZE)
 diskutil eraseVolume HFS+ RAMDisk $DISK
 
 echo "created $DISK"
+
+mount | grep $DISK | sed 's|^.* on \(.*\) (.*$|\1|' || (echo "not mounted" 1>&2 && exit 1)
