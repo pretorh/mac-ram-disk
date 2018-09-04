@@ -1,0 +1,14 @@
+#! env bash
+
+set -e
+
+# based on https://stackoverflow.com/a/2033417/1016377
+
+MB_SIZE=${MB_SIZE:-5}
+SIZE=$((2 * 1024 * $MB_SIZE))
+echo "creating ram disk of size $MB_SIZE mb ($SIZE)"
+
+DISK=$(hdiutil attach -nomount ram://$SIZE)
+diskutil eraseVolume HFS+ RAMDisk $DISK
+
+echo "created $DISK"
